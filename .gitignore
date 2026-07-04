@@ -1,0 +1,40 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# next.js
+.next/
+out/
+build/
+dist/
+
+# env / secrets
+.env
+.env.local
+.env.*.local
+
+# types
+*.tsbuildinfo
+next-env.d.ts
+
+# uploads — keep dir, ignore contents (user content)
+public/uploads/*
+!public/uploads/.gitkeep
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# os / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# misc
+coverage/
+.cache/
