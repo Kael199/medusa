@@ -5,9 +5,16 @@ const config: Config = {
   content: [
     "./app/**/*.{ts,tsx,mdx}",
     "./components/**/*.{ts,tsx}",
-    "./lib/**/*.{ts,tsx}", // class strings in helpers
+    "./lib/**/*.{ts,tsx}",
   ],
   theme: {
+    container: {
+      center: true,
+      padding: "1rem",
+      screens: {
+        "2xl": "76rem",
+      },
+    },
     extend: {
       colors: {
         border: "hsl(var(--border))",
@@ -26,6 +33,14 @@ const config: Config = {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        vip: {
+          DEFAULT: "hsl(var(--vip))",
+          foreground: "hsl(var(--vip-foreground))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -48,9 +63,32 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        xl: "calc(var(--radius) + 6px)",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+      },
+      boxShadow: {
+        "elev-1": "var(--elev-1)",
+        "elev-2": "var(--elev-2)",
+        "elev-3": "var(--elev-3)",
+      },
+      keyframes: {
+        "fade-up": {
+          from: { opacity: "0", transform: "translateY(8px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+      },
+      animation: {
+        "fade-up": "fade-up 280ms ease-out both",
+        shimmer: "shimmer 2s linear infinite",
+      },
+      transitionTimingFunction: {
+        "out-quart": "cubic-bezier(0.25, 1, 0.5, 1)",
       },
     },
   },

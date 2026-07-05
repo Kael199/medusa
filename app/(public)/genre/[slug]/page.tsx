@@ -13,7 +13,6 @@ interface GenrePageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-// Data + searchParams-driven; never statically renderable.
 export const dynamic = "force-dynamic";
 
 function scalar(v: string | string[] | undefined): string | undefined {
@@ -56,15 +55,20 @@ export default async function GenrePage({ params, searchParams }: GenrePageProps
   const query: Record<string, string | undefined> = { sort: scalar(sp.sort) };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6">
-      <h1 className="mb-1 text-2xl font-bold">Genre: {genre.name}</h1>
-      <p className="mb-6 text-sm text-muted-foreground">{result.total} titles in this genre</p>
+    <div className="container py-6 sm:py-8">
+      <div className="mb-6">
+        <p className="text-xs font-semibold uppercase tracking-wider text-primary">Genre</p>
+        <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">{genre.name}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {result.total} {result.total === 1 ? "title" : "titles"} in this genre
+        </p>
+      </div>
       <MangaGrid
         manga={manga}
         emptyTitle="Nothing here yet"
         emptyDescription="No published manga carry this genre."
       />
-      <div className="mt-6 flex justify-center">
+      <div className="mt-8 flex justify-center">
         <Pagination basePath={`/genre/${slug}`} query={query} page={result.page} totalPages={result.totalPages} />
       </div>
     </div>

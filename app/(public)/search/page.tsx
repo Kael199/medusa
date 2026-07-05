@@ -30,14 +30,14 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
   const headings = (
     <div className="mb-6">
-      <h1 className="mb-3 text-2xl font-bold">Search</h1>
+      <h1 className="mb-3 text-2xl font-extrabold tracking-tight sm:text-3xl">Search</h1>
       <SearchBar defaultValue={q} className="max-w-xl" />
     </div>
   );
 
   if (!q) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-6">
+      <div className="container py-6 sm:py-8">
         {headings}
         <EmptyState
           icon={Search}
@@ -72,7 +72,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const query: Record<string, string | undefined> = { q };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6">
+    <div className="container py-6 sm:py-8">
       {headings}
       <p className="mb-4 text-sm text-muted-foreground">
         {result.total} {result.total === 1 ? "result" : "results"} for “{q}”
@@ -82,7 +82,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         emptyTitle="No results"
         emptyDescription={`No manga matched “${q}”. Try a different search.`}
       />
-      <div className="mt-6 flex justify-center">
+      <div className="mt-8 flex justify-center">
         <Pagination basePath="/search" query={query} page={result.page} totalPages={result.totalPages} />
       </div>
     </div>

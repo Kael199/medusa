@@ -72,10 +72,14 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6">
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Browse</h1>
-        <p className="text-sm text-muted-foreground">{result.total} titles</p>
+    <div className="container py-6 sm:py-8">
+      <div className="mb-6 flex items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">Browse</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {result.total} {result.total === 1 ? "title" : "titles"}
+          </p>
+        </div>
       </div>
 
       <div className="flex gap-6">
@@ -89,7 +93,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
             emptyTitle="No manga found"
             emptyDescription="Try removing filters or searching for something else."
           />
-          <div className="mt-6 flex justify-center">
+          <div className="mt-8 flex justify-center">
             <Pagination basePath="/browse" query={query} page={result.page} totalPages={result.totalPages} />
           </div>
         </div>

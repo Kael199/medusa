@@ -3,13 +3,18 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, BookOpen } from "lucide-react";
+import { Menu, BookOpen, Moon, Sun, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
-  Sheet, SheetTrigger, SheetContent, SheetTitle, SheetClose,
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetTitle,
+  SheetClose,
 } from "@/components/ui/sheet";
 import { SearchBar } from "@/components/public/SearchBar";
+import { useTheme } from "@/lib/theme";
+import { cn } from "@/lib/utils/cn";
 
 interface PublicNavbarProps {
   siteName: string;
@@ -18,6 +23,7 @@ interface PublicNavbarProps {
 export function PublicNavbar({ siteName }: PublicNavbarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   const navLinks = [
     { href: "/browse", label: "Browse" },
@@ -25,60 +31,114 @@ export function PublicNavbar({ siteName }: PublicNavbarProps) {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4">
-        <Link href="/" className="flex items-center gap-2 font-bold">
-          <BookOpen className="h-5 w-5 text-primary" />
-          <span className="text-lg tracking-tight">{siteName}</span>
+    <header className="sticky top-0 z-40 w-full border-b glass">
+      <div className="container flex h-16 items-center gap-3">
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-extrabold tracking-tight"
+        >
+          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground shadow-elev-1">
+            <BookOpen className="h-5 w-5" />
+          </span>
+          <span className="text-lg">{siteName}</span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          {navLinks.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className={
-                "rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent " +
-                (pathname === l.href || pathname.startsWith(l.href + "/")
-                  ? "text-foreground"
-                  : "text-muted-foreground")
-              }
-            >
-              {l.label}
-            </Link>
-          ))}
+          {navLinks.map((l) => {
+            const active =
+              pathname === l.href || pathname.startsWith(l.href + "/");
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  "hover:bg-accent hover:text-accent-foreground",
+                  active
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground",
+                )}
+              >
+                {l.label}
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className="ml-auto hidden max-w-xs flex-1 md:block">
+        <div className="ml-auto hidden max-w-md flex-1 md:block">
           <SearchBar />
         </div>
 
-        <div className="ml-auto md:hidden">
-          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Open menu">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-80">
-              <SheetTitle className="mb-4">{siteName}</SheetTitle>
-              <div className="mb-4">
-                <SearchBar onSubmitted={() => setMobileOpen(false)} />
-              </div>
-              <nav className="flex flex-col gap-1">
-                {navLinks.map((l) => (
-                  <SheetClose asChild key={l.href}>
-                    <Link
-                      href={l.href}
-                      className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
-                    >
-                      {l.label}
-                    </Link>
-                  </SheetClose>
-                ))}
-              </nav>
-            </SheetContent>
-          </Sheet>
+        <div className="ml-auto flex items-center gap-1 md:ml-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Toggle theme"
+            className="hidden sm:inline-flex"
+            onClick={() =>
+              setTheme(theme === "dark" ? "light" : "dark")
+            }
+          >
+            <Sun className="h-4 w-4 dark:hidden" />
+            <Moon className="hidden h-4 w-4 dark:block" />
+          </Button>
+          <Link
+            href="/login"
+            className="hidden items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground shadow-elev-1 transition hover:opacity-90 sm:inline-flex"
+          >
+            <Sparkles className="h-4 w-4" />
+            Sign in
+          </Link>
+          <div className="md:hidden">
+            <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="Open menu">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-80 p-5">
+                <SheetTitle className="mb-4 flex items-center gap-2">
+                  <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
+                    <BookOpen className="h-4 w-4" />
+                  </span>
+                  {siteName}
+                </SheetTitle>
+                <div className="mb-4">
+                  <SearchBar onSubmitted={() => setMobileOpen(false)} />
+                </div>
+                <nav className="flex flex-col gap-1">
+                  {navLinks.map((l) => (
+                    <SheetClose asChild key={l.href}>
+                      <Link
+                        href={l.href}
+                        className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
+                      >
+                        {l.label}
+                      </Link>
+                    </SheetClose>
+                  ))}
+                </nav>
+                <div className="mt-4 flex items-center gap-2 border-t pt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() =>
+                      setTheme(theme === "dark" ? "light" : "dark")
+                    }
+                  >
+                    <Sun className="h-4 w-4 dark:hidden" />
+                    <Moon className="hidden h-4 w-4 dark:block" />
+                    Toggle theme
+                  </Button>
+                  <Button asChild className="flex-1">
+                    <Link href="/login">Sign in</Link>
+                  </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>
