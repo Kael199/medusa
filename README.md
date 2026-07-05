@@ -88,3 +88,17 @@ Open http://localhost:3000, then go to `/login` and sign in with your seeded Sup
 - Public query builders use closed allowlists; Mongo operator keys (`$gt`, `$where`, …) are dropped — defenses against NoSQL injection.
 - IDOR: every mutation loads the resource, checks `can(role, "…:editAny")` / `editOwn` (`uploadedById.equals(user.id)`), and rejects otherwise.
 - File upload: magic-byte sniff, size + count caps, reject SVG, server-generated filenames (never the user's), ObjectId-validated path components.
+
+## Deploying to Vercel
+
+1. **Create a free MongoDB Atlas cluster** and whitelist `0.0.0.0/0` (or add Vercel's egress IPs once you know them). Copy the connection string — it looks like `mongodb+srv://USER:PASS@cluster0.xxxxx.mongodb.net/mango?retryWrites=true&w=majority`.
+2. **Push to GitHub** and import the repo in Vercel. The included `vercel.json` pins the framework to Next.js and uses the standard `npm run build`.
+3. **Set environment variables** in Project Settings → Environment Variables:
+   - `MONGODB_URI` — your Atlas connection string (Production / Preview / Development as needed).
+   - `AUTH_SECRET` — generate with `npx auth secret` or `openssl rand -base64 33`.
+   - `NEXT_PUBLIC_APP_URL` — set to your Vercel domain (e.g. `https://mango.vercel.app`).
+   - `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` — your super-admin login.
+   - `STAFF_INVITE_CODE` *(optional)* — set this to enable `/signup`; leave unset to keep it disabled.
+4. **Seed the super-admin.** Vercel's build step does NOT run the seeder (you don't want a side-effecting CLI in the build pipeline). After the first deploy, run `SEED_ADMIN_EMAIL=… SEED_ADMIN_PASSWORD=… MONGODB_URI=… npm run seed` locally pointed at the production DB — or use a one-off Vercel Cron / `vercel env pull` + `npm run seed`.
+5. **Uploads caveat.** Vercel's serverless filesystem is read-only — `public/uploads/` writes are fine locally but will not persist in production. The codebase is structured so swapping `lib/actions/upload.ts` for an S3/Blob adapter is a one-file change. Don't enable uploads on Vercel until you do.
+6. **Auth.js callback URL.** When configuring OAuth later, set the callback to `${NEXT_PUBLIC_APP_URL}/api/auth/callback/<provider>`. Credentials provider needs no callback config.
