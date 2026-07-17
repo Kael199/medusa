@@ -51,7 +51,7 @@ export function SearchBar({
         placeholder="Search titles, authors…"
         aria-label="Search manga"
         autoFocus={autoFocus}
-        className="pl-9 pr-9"
+        className="reader-input pl-9 pr-9"
       />
       {value && (
         <Button

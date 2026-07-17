@@ -52,12 +52,12 @@ export function ChapterList({ chapters, mangaSlug }: ChapterListProps) {
   const sorted = [...chapters].sort((a, b) => b.chapterNumber - a.chapterNumber);
 
   return (
-    <ol className="divide-y overflow-hidden rounded-lg border bg-card shadow-elev-1">
+    <ol className="reader-panel divide-y divide-white/10 overflow-hidden rounded-lg">
       {sorted.map((c) => (
         <li key={String(c._id)} className="group">
           <Link
             href={`/read/${mangaSlug}/${String(c._id)}`}
-            className="flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-accent"
+            className="flex items-center justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-white/[0.045]"
           >
             <div className="flex min-w-0 items-center gap-3">
               <span

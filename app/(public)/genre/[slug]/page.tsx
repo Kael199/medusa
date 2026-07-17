@@ -55,12 +55,12 @@ export default async function GenrePage({ params, searchParams }: GenrePageProps
   const query: Record<string, string | undefined> = { sort: scalar(sp.sort) };
 
   return (
-    <div className="container py-6 sm:py-8">
-      <div className="mb-6">
-        <p className="text-xs font-semibold uppercase tracking-wider text-primary">Genre</p>
-        <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">{genre.name}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {result.total} {result.total === 1 ? "title" : "titles"} in this genre
+    <div className="reader-container py-8 sm:py-10">
+      <div className="reader-panel mb-7 rounded-xl px-5 py-6 sm:px-7">
+        <p className="reader-kicker">Genre archive</p>
+        <h1 className="mt-1 text-3xl font-black tracking-tight sm:text-4xl">{genre.name}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {result.total} {result.total === 1 ? "title" : "titles"} in this collection
         </p>
       </div>
       <MangaGrid

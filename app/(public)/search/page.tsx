@@ -29,15 +29,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const page = Math.max(1, parseInt(scalar(sp.page) ?? "1", 10) || 1);
 
   const headings = (
-    <div className="mb-6">
-      <h1 className="mb-3 text-2xl font-extrabold tracking-tight sm:text-3xl">Search</h1>
-      <SearchBar defaultValue={q} className="max-w-xl" />
+    <div className="reader-panel mb-7 rounded-xl px-5 py-6 sm:px-7">
+      <p className="reader-kicker">Find a story</p>
+      <h1 className="mb-4 mt-1 text-3xl font-black tracking-tight sm:text-4xl">Search the library</h1>
+      <SearchBar defaultValue={q} className="max-w-xl [&>input]:reader-input" />
     </div>
   );
 
   if (!q) {
     return (
-      <div className="container py-6 sm:py-8">
+      <div className="reader-container py-8 sm:py-10">
         {headings}
         <EmptyState
           icon={Search}

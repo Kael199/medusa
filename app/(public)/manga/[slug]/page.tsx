@@ -101,7 +101,7 @@ export default async function MangaDetailPage({ params }: MangaPageProps) {
   const tags = (manga.tags ?? []) as unknown as { name: string; slug: string }[];
 
   return (
-    <div>
+    <div className="reader-grid-bg">
       {/* Banner */}
       {manga.bannerImage && (
         <div className="relative h-48 overflow-hidden border-b sm:h-64">
@@ -117,8 +117,8 @@ export default async function MangaDetailPage({ params }: MangaPageProps) {
         </div>
       )}
 
-      <div className="mx-auto max-w-7xl px-4 py-6">
-        <div className="flex flex-col gap-6 sm:flex-row">
+      <div className="reader-container py-7 sm:py-10">
+        <div className="reader-panel flex flex-col gap-6 rounded-xl p-5 sm:flex-row sm:p-7">
           {/* Cover */}
           <div className="mx-auto w-40 shrink-0 sm:mx-0">
             <div className="relative aspect-[2/3] w-full overflow-hidden rounded-md border bg-muted shadow">
@@ -142,7 +142,8 @@ export default async function MangaDetailPage({ params }: MangaPageProps) {
 
           {/* Meta */}
           <div className="min-w-0 flex-1">
-            <h1 className="text-2xl font-bold sm:text-3xl">{manga.title}</h1>
+            <p className="reader-kicker">Series file</p>
+            <h1 className="mt-1 text-3xl font-black tracking-tight sm:text-4xl">{manga.title}</h1>
             {manga.altTitles && manga.altTitles.length > 0 && (
               <p className="mt-1 text-sm text-muted-foreground">{manga.altTitles.join(" · ")}</p>
             )}
@@ -192,7 +193,8 @@ export default async function MangaDetailPage({ params }: MangaPageProps) {
 
         {/* Chapters */}
         <section className="mt-8">
-          <h2 className="mb-3 text-lg font-semibold">Chapters ({chapterRows.length})</h2>
+          <p className="reader-kicker">Reading queue</p>
+          <h2 className="mb-3 mt-1 text-xl font-black">Chapters ({chapterRows.length})</h2>
           <ChapterList chapters={chapterRows} mangaSlug={slug} />
         </section>
       </div>

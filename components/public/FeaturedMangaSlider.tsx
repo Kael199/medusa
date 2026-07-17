@@ -60,7 +60,7 @@ export function FeaturedMangaSlider({ slides }: FeaturedMangaSliderProps) {
     <section
       aria-label="Featured series"
       aria-roledescription="carousel"
-      className="relative isolate mb-12 overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950 shadow-[0_32px_90px_-35px_rgb(30_27_75/0.75)]"
+      className="relative isolate mb-12 overflow-hidden rounded-xl border border-white/10 bg-[#111520] shadow-[0_32px_70px_-38px_rgb(0_0_0/0.95)]"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -100,13 +100,14 @@ export function FeaturedMangaSlider({ slides }: FeaturedMangaSliderProps) {
               ) : (
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,hsl(24_95%_53%/0.85),transparent_35%),radial-gradient(circle_at_15%_85%,hsl(243_75%_59%/0.7),transparent_45%),linear-gradient(120deg,#090c1a,#1e1b4b)]" />
               )}
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(2_6_23/0.98)_0%,rgb(2_6_23/0.87)_37%,rgb(2_6_23/0.35)_70%,rgb(2_6_23/0.12)_100%)]" />
-              <div className="absolute inset-0 bg-[linear-gradient(0deg,rgb(2_6_23/0.78)_0%,transparent_52%)]" />
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(8_10_16/0.98)_0%,rgb(8_10_16/0.9)_42%,rgb(8_10_16/0.38)_72%,rgb(8_10_16/0.12)_100%)]" />
+              <div className="absolute inset-0 bg-[linear-gradient(0deg,rgb(8_10_16/0.84)_0%,transparent_52%)]" />
+              <div className="pointer-events-none absolute inset-0 reader-grid-bg opacity-25" />
 
               <div className="relative flex min-h-[31rem] max-w-3xl flex-col justify-end px-6 pb-16 pt-20 sm:min-h-[34rem] sm:px-10 sm:pb-20 lg:min-h-[38rem] lg:px-14">
                 <div className="mb-4 flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-orange-200">
-                  <span className="rounded-full border border-orange-300/30 bg-orange-400/15 px-3 py-1.5 backdrop-blur">
-                    Featured series
+                  <span className="rounded border border-[hsl(var(--reader-accent)/0.45)] bg-[hsl(var(--reader-accent)/0.15)] px-3 py-1.5 text-[hsl(var(--reader-accent))] backdrop-blur">
+                    Spotlight title
                   </span>
                   <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-slate-100 backdrop-blur">
                     {slide.status}
@@ -134,7 +135,7 @@ export function FeaturedMangaSlider({ slides }: FeaturedMangaSliderProps) {
                 )}
 
                 <div className="mt-7 flex flex-wrap gap-3">
-                  <Button asChild size="lg" className="bg-orange-500 text-white shadow-lg shadow-orange-950/30 hover:bg-orange-400">
+                  <Button asChild size="lg" className="bg-[hsl(var(--reader-accent))] text-white shadow-lg shadow-black/30 hover:bg-[hsl(var(--reader-accent-strong))]">
                     <Link href={`/manga/${slide.slug}`} tabIndex={isActive ? 0 : -1}>
                       <Play className="h-4 w-4 fill-current" /> Start reading
                     </Link>

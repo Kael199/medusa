@@ -54,7 +54,8 @@ export default async function HomePage() {
   ]);
 
   return (
-    <div className="container hero-aurora py-6 sm:py-8">
+    <div className="reader-grid-bg">
+      <div className="reader-container py-6 sm:py-8">
       <FeaturedMangaSlider slides={featuredManga} />
 
       {featuredManga.length === 0 && (
@@ -80,13 +81,14 @@ export default async function HomePage() {
         </div>
       )}
 
-      <section className="mb-10">
-        <div className="mb-4 flex items-end justify-between gap-4">
+      <section className="mb-12">
+        <div className="mb-5 flex items-end justify-between gap-4 border-b border-white/10 pb-4">
           <div>
-            <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight sm:text-2xl">
-              <Sparkles className="h-5 w-5 text-primary" /> Recently updated
+            <p className="reader-kicker">Just added</p>
+            <h2 className="mt-1 flex items-center gap-2 text-xl font-black tracking-tight sm:text-2xl">
+              <Sparkles className="h-5 w-5 text-[hsl(var(--reader-accent))]" /> Latest releases
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">Fresh chapters just landed.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Fresh chapters from the library.</p>
           </div>
           <Link
             href="/browse?sort=latest"
@@ -104,12 +106,13 @@ export default async function HomePage() {
       </section>
 
       <section>
-        <div className="mb-4 flex items-end justify-between gap-4">
+        <div className="mb-5 flex items-end justify-between gap-4 border-b border-white/10 pb-4">
           <div>
-            <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight sm:text-2xl">
-              <TrendingUp className="h-5 w-5 text-primary" /> Popular
+            <p className="reader-kicker">Community pulse</p>
+            <h2 className="mt-1 flex items-center gap-2 text-xl font-black tracking-tight sm:text-2xl">
+              <TrendingUp className="h-5 w-5 text-[hsl(var(--reader-cyan))]" /> Trending now
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">Most-read this week.</p>
+            <p className="mt-1 text-sm text-muted-foreground">The most explored stories in the library.</p>
           </div>
           <Link
             href="/browse?sort=views"
@@ -121,6 +124,7 @@ export default async function HomePage() {
         </div>
         <MangaGrid manga={popular} emptyTitle="No series yet" />
       </section>
+      </div>
     </div>
   );
 }

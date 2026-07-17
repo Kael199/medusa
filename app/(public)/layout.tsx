@@ -23,11 +23,11 @@ export default async function PublicLayout({
   const settings = await getSettings();
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="reader-public-shell flex min-h-dvh flex-col">
       <PublicNavbar siteName={settings.siteName} />
       {settings.announcements.length > 0 && (
-        <div className="bg-primary text-primary-foreground">
-          <div className="mx-auto max-w-7xl px-4 py-2 text-center text-sm">
+        <div className="border-b border-white/10 bg-[hsl(var(--reader-accent)/0.12)] text-[hsl(var(--reader-text))]">
+          <div className="reader-container py-2 text-center text-xs font-medium tracking-wide sm:text-sm">
             {settings.announcements.join(" · ")}
           </div>
         </div>

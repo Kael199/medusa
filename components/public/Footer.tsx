@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Github } from "lucide-react";
+import { BookOpen, ChevronRight } from "lucide-react";
 
 interface FooterProps {
   siteName: string;
@@ -9,71 +9,45 @@ interface FooterProps {
 export function Footer({ siteName, footerText }: FooterProps) {
   const year = new Date().getFullYear();
   return (
-    <footer className="border-t bg-card/40">
-      <div className="container py-10">
-        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
-          <div className="space-y-3">
-            <Link href="/" className="flex items-center gap-2 font-extrabold tracking-tight">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-                <BookOpen className="h-4 w-4" />
-              </span>
+    <footer className="mt-16 border-t border-white/10 bg-[#0c0f16] text-[hsl(var(--reader-text))]">
+      <div className="reader-container py-12">
+        <div className="grid gap-10 md:grid-cols-[1.5fr_repeat(3,1fr)]">
+          <div>
+            <Link href="/" className="flex items-center gap-2.5 font-black uppercase tracking-[0.08em]">
+              <span className="grid h-9 w-9 place-items-center rounded-lg bg-[hsl(var(--reader-accent))] text-white"><BookOpen className="h-5 w-5" /></span>
               {siteName}
             </Link>
-            {footerText && (
-              <p className="max-w-xs text-sm text-muted-foreground">{footerText}</p>
-            )}
-          </div>
-
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Read
-            </h3>
-            <ul className="mt-3 space-y-2 text-sm">
-              <li>
-                <Link href="/browse" className="hover:text-primary">Browse</Link>
-              </li>
-              <li>
-                <Link href="/search" className="hover:text-primary">Search</Link>
-              </li>
-              <li>
-                <Link href="/browse?sort=latest" className="hover:text-primary">
-                  Latest updates
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Account
-            </h3>
-            <ul className="mt-3 space-y-2 text-sm">
-              <li>
-                <Link href="/login" className="hover:text-primary">Sign in</Link>
-              </li>
-              <li>
-                <Link href="/signup" className="hover:text-primary">Sign up</Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              About
-            </h3>
-            <p className="mt-3 text-sm text-muted-foreground">
-              A self-hosted manga reader. All titles are property of their respective owners.
+            <p className="mt-4 max-w-sm text-sm leading-6 text-[hsl(var(--reader-muted))]">
+              {footerText || "A focused home for discovering, following, and reading your library."}
             </p>
           </div>
+          <FooterColumn title="Discover" links={[['Library', '/browse'], ['Latest updates', '/browse?sort=latest'], ['Top rated', '/browse?sort=rating']]} />
+          <FooterColumn title="Explore" links={[['Popular titles', '/browse?sort=views'], ['Search', '/search'], ['Browse genres', '/browse']]} />
+          <FooterColumn title="Account" links={[['Sign in', '/login'], ['Create account', '/signup']]} />
         </div>
-
-        <div className="mt-8 flex flex-col gap-3 border-t pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-2 border-t border-white/10 pt-5 text-xs text-[hsl(var(--reader-muted))] sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} {siteName}. All rights reserved.</p>
-          <p className="flex items-center gap-1.5">
-            <Github className="h-3.5 w-3.5" /> Built with Next.js &amp; MongoDB
-          </p>
+          <p>Read responsibly and support original creators.</p>
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterColumn({ title, links }: { title: string; links: [string, string][] }) {
+  return (
+    <div>
+      <h3 className="reader-kicker">{title}</h3>
+      <ul className="mt-4 space-y-2.5">
+        {links.map(([label, href]) => (
+          <li key={href}>
+            <Link href={href} className="group inline-flex items-center gap-1 text-sm text-[hsl(var(--reader-muted))] transition hover:text-white">
+              <ChevronRight className="h-3.5 w-3.5 text-[hsl(var(--reader-accent))] opacity-0 transition group-hover:opacity-100" />
+              {label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

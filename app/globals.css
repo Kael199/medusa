@@ -201,6 +201,59 @@
   }
 }
 
+/* Original dark reader discovery shell. Scoped to public routes so the admin and reader retain their own semantic theme tokens. */
+.reader-public-shell {
+  --reader-bg: 225 28% 7%;
+  --reader-panel: 224 24% 11%;
+  --reader-panel-strong: 224 22% 14%;
+  --reader-text: 218 35% 94%;
+  --reader-muted: 218 15% 66%;
+  --reader-border: 221 19% 20%;
+  --reader-accent: 11 88% 60%;
+  --reader-accent-strong: 8 91% 55%;
+  --reader-cyan: 188 86% 59%;
+  color: hsl(var(--reader-text));
+  background:
+    radial-gradient(circle at 7% -4%, hsl(11 88% 60% / 0.15), transparent 25rem),
+    radial-gradient(circle at 94% 7%, hsl(188 86% 59% / 0.08), transparent 30rem),
+    hsl(var(--reader-bg));
+}
+.reader-public-shell :is(h1, h2, h3) { color: hsl(var(--reader-text)); }
+.reader-public-shell .text-muted-foreground { color: hsl(var(--reader-muted)); }
+.reader-public-shell .border { border-color: hsl(var(--reader-border)); }
+.reader-public-shell .bg-card { background-color: hsl(var(--reader-panel)); }
+.reader-public-shell .bg-muted { background-color: hsl(var(--reader-panel-strong)); }
+.reader-public-shell .bg-accent { background-color: hsl(var(--reader-panel-strong)); }
+.reader-public-shell .hover\:bg-accent:hover { background-color: hsl(var(--reader-panel-strong)); }
+.reader-public-shell .text-primary { color: hsl(var(--reader-accent)); }
+.reader-public-shell .bg-primary { background-color: hsl(var(--reader-accent)); }
+.reader-public-shell .reader-container { width: 100%; max-width: 90rem; margin-inline: auto; padding-inline: 1rem; }
+.reader-public-shell .reader-panel {
+  border: 1px solid hsl(var(--reader-border));
+  background: linear-gradient(135deg, hsl(var(--reader-panel) / 0.95), hsl(var(--reader-panel-strong) / 0.88));
+  box-shadow: 0 22px 55px -36px rgb(0 0 0 / 0.8);
+}
+.reader-public-shell .reader-kicker {
+  color: hsl(var(--reader-accent));
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.reader-public-shell .reader-grid-bg {
+  background-image:
+    linear-gradient(hsl(218 35% 94% / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(218 35% 94% / 0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.reader-public-shell .reader-input {
+  border-color: hsl(var(--reader-border));
+  background: hsl(var(--reader-panel));
+  color: hsl(var(--reader-text));
+}
+.reader-public-shell .reader-input::placeholder { color: hsl(var(--reader-muted)); }
+.reader-public-shell .reader-input:focus-visible { --tw-ring-color: hsl(var(--reader-accent)); }
+
 /* Reader-specific helpers */
 .webtoon-strip img {
   display: block;
