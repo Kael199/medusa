@@ -31,16 +31,16 @@ export function PublicNavbar({ siteName }: PublicNavbarProps) {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b glass">
-      <div className="container flex h-16 items-center gap-3">
+    <header className="sticky top-0 z-40 w-full border-b border-indigo-950/10 bg-background/80 shadow-[0_8px_30px_-24px_hsl(243_60%_24%/0.42)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/65 dark:border-white/10">
+      <div className="container flex h-[4.5rem] items-center gap-3">
         <Link
           href="/"
           className="flex items-center gap-2 font-extrabold tracking-tight"
         >
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground shadow-elev-1">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-orange-400 to-primary text-primary-foreground shadow-lg shadow-orange-500/20">
             <BookOpen className="h-5 w-5" />
           </span>
-          <span className="text-lg">{siteName}</span>
+          <span className="text-lg font-black tracking-[-0.03em]">{siteName}</span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -56,7 +56,7 @@ export function PublicNavbar({ siteName }: PublicNavbarProps) {
                   "rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   "hover:bg-accent hover:text-accent-foreground",
                   active
-                    ? "bg-accent text-accent-foreground"
+                    ? "bg-indigo-500/10 text-indigo-700 dark:bg-indigo-400/15 dark:text-indigo-200"
                     : "text-muted-foreground",
                 )}
               >
@@ -85,7 +85,7 @@ export function PublicNavbar({ siteName }: PublicNavbarProps) {
           </Button>
           <Link
             href="/login"
-            className="hidden items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground shadow-elev-1 transition hover:opacity-90 sm:inline-flex"
+            className="hidden items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground shadow-lg shadow-orange-500/20 transition hover:-translate-y-0.5 hover:bg-orange-400 sm:inline-flex"
           >
             <Sparkles className="h-4 w-4" />
             Sign in

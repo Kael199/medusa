@@ -33,7 +33,7 @@ export function MangaCard({ manga }: { manga: MangaCardData }) {
       href={href}
       className="group block focus-visible:outline-none"
     >
-      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg border bg-muted shadow-elev-1 transition group-hover:shadow-elev-2">
+      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl border border-indigo-950/10 bg-muted shadow-elev-1 transition duration-300 group-hover:-translate-y-1 group-hover:border-primary/30 group-hover:shadow-[0_18px_32px_-18px_hsl(243_60%_25%/0.45)] dark:border-white/10">
         {manga.coverImage ? (
           <Image
             src={manga.coverImage}
@@ -89,7 +89,7 @@ export function MangaCard({ manga }: { manga: MangaCardData }) {
         </div>
       </div>
 
-      <h3 className="mt-2 line-clamp-2 text-sm font-medium leading-tight transition-colors group-hover:text-primary">
+      <h3 className="mt-3 line-clamp-2 text-sm font-bold leading-tight tracking-tight transition-colors group-hover:text-primary">
         {manga.title}
       </h3>
     </Link>

@@ -1,13 +1,15 @@
 import Link from "next/link";
-import Image from "next/image";
 import { connect } from "@/lib/db/mongoose";
 import "@/models";
 import { Manga } from "@/models";
 import { getSettings } from "@/lib/query/get-settings";
 import { MangaGrid } from "@/components/public/MangaGrid";
 import type { MangaCardData } from "@/components/public/MangaCard";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Flame, Sparkles, TrendingUp } from "lucide-react";
+import {
+  FeaturedMangaSlider,
+  type FeaturedMangaSlide,
+} from "@/components/public/FeaturedMangaSlider";
+import { ArrowRight, Sparkles, TrendingUp } from "lucide-react";
 
 const HOMELIMIT = 12;
 
@@ -41,66 +43,32 @@ export default async function HomePage() {
 
   const baseFilter = { isPublished: true, isHidden: { $ne: true } };
 
-  const [recentlyUpdated, popular, heroManga] = await Promise.all([
+  const [recentlyUpdated, popular, featuredManga] = await Promise.all([
     fetchMangaCardData(baseFilter, { updatedAt: -1 }, HOMELIMIT),
     fetchMangaCardData(baseFilter, { views: -1 }, HOMELIMIT),
-    Manga.findOne(baseFilter)
-      .sort({ views: -1 })
-      .select("slug title bannerImage coverImage description author status type")
-      .lean() as unknown as {
-        slug: string;
-        title: string;
-        bannerImage?: string;
-        coverImage?: string;
-        description?: string;
-        author?: string;
-        status: string;
-        type: string;
-      } | null,
+    Manga.find(baseFilter)
+      .sort({ views: -1, updatedAt: -1 })
+      .limit(5)
+      .select("slug title bannerImage coverImage description author status type rating")
+      .lean() as unknown as FeaturedMangaSlide[],
   ]);
 
   return (
-    <div className="container py-6 sm:py-8">
-      {/* Hero */}
-      {heroManga && (heroManga.bannerImage || heroManga.coverImage) && (
-        <section className="group relative mb-10 overflow-hidden rounded-2xl border bg-card shadow-elev-1">
-          <div className="absolute inset-0">
-            <Image
-              src={(heroManga.bannerImage || heroManga.coverImage)!}
-              alt=""
-              fill
-              priority
-              sizes="100vw"
-              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-            />
-            <div className="absolute inset-0 gradient-hero" />
-          </div>
-          <div className="relative flex min-h-[20rem] flex-col justify-end gap-3 p-6 sm:min-h-[24rem] sm:p-10">
-            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/95 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary-foreground shadow-elev-1">
-              <Flame className="h-3.5 w-3.5" /> Popular now
-            </span>
-            <h1 className="max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
-              {heroManga.title}
-            </h1>
-            {heroManga.author && (
-              <p className="text-sm text-muted-foreground">by {heroManga.author}</p>
-            )}
-            {heroManga.description && (
-              <p className="line-clamp-2 max-w-2xl text-sm text-muted-foreground text-balance">
-                {heroManga.description}
-              </p>
-            )}
-            <div className="mt-2 flex flex-wrap items-center gap-3">
-              <Button asChild size="lg">
-                <Link href={`/manga/${heroManga.slug}`}>
-                  Read now <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="ghost" className="backdrop-blur">
-                <Link href="/browse">Browse library</Link>
-              </Button>
-            </div>
-          </div>
+    <div className="container hero-aurora py-6 sm:py-8">
+      <FeaturedMangaSlider slides={featuredManga} />
+
+      {featuredManga.length === 0 && (
+        <section className="mb-12 overflow-hidden rounded-[2rem] border border-indigo-200/60 bg-[radial-gradient(circle_at_top_right,hsl(24_95%_53%/0.18),transparent_35%),linear-gradient(135deg,hsl(var(--card)),hsl(243_75%_97%))] p-8 shadow-elev-2 dark:border-indigo-400/10 dark:bg-[radial-gradient(circle_at_top_right,hsl(24_95%_53%/0.22),transparent_35%),linear-gradient(135deg,hsl(222_30%_10%),hsl(243_45%_16%))] sm:p-12">
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">Your next obsession</p>
+          <h1 className="mt-3 max-w-2xl text-balance text-4xl font-black tracking-[-0.045em] sm:text-5xl">
+            A curated home for every chapter.
+          </h1>
+          <p className="mt-4 max-w-xl text-muted-foreground">
+            New releases, fan favorites, and unforgettable worlds will appear here as soon as you publish your first series.
+          </p>
+          <Link href="/browse" className="mt-7 inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-elev-2 transition hover:-translate-y-0.5 hover:brightness-110">
+            Explore library <ArrowRight className="h-4 w-4" />
+          </Link>
         </section>
       )}
 

@@ -5,26 +5,26 @@
 @layer base {
   :root {
     /* Brand */
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    --background: 230 45% 98%;
+    --foreground: 228 43% 13%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 228 43% 13%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 228 43% 13%;
 
-    --primary: 24 95% 53%;
+    --primary: 24 95% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 244 65% 96%;
+    --secondary-foreground: 243 60% 24%;
 
-    --muted: 240 5% 96%;
-    --muted-foreground: 222 12% 42%;
+    --muted: 230 35% 96%;
+    --muted-foreground: 224 15% 40%;
 
-    --accent: 24 95% 95%;
-    --accent-foreground: 24 90% 28%;
+    --accent: 244 72% 95%;
+    --accent-foreground: 243 62% 29%;
 
     --destructive: 0 78% 52%;
     --destructive-foreground: 0 0% 100%;
@@ -60,14 +60,14 @@
     --primary: 24 95% 58%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 222 14% 14%;
-    --secondary-foreground: 210 20% 96%;
+    --secondary: 244 31% 17%;
+    --secondary-foreground: 240 30% 96%;
 
-    --muted: 222 14% 14%;
-    --muted-foreground: 215 12% 65%;
+    --muted: 228 22% 15%;
+    --muted-foreground: 224 15% 70%;
 
-    --accent: 222 14% 16%;
-    --accent-foreground: 24 95% 78%;
+    --accent: 244 29% 20%;
+    --accent-foreground: 28 100% 80%;
 
     --destructive: 0 70% 52%;
     --destructive-foreground: 0 0% 100%;
@@ -161,6 +161,19 @@
       hsl(var(--background) / 0.3) 75%,
       transparent 100%
     );
+  }
+
+  .hero-aurora {
+    background:
+      radial-gradient(circle at 10% 10%, hsl(24 95% 53% / 0.16), transparent 26rem),
+      radial-gradient(circle at 90% 0%, hsl(243 75% 59% / 0.14), transparent 30rem);
+  }
+
+  .text-brand-gradient {
+    background: linear-gradient(115deg, hsl(24 95% 50%), hsl(12 90% 53%) 45%, hsl(243 75% 54%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .gradient-vip {
