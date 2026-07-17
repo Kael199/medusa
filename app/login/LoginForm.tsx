@@ -91,7 +91,7 @@ export function LoginForm({ callbackPath }: LoginFormProps) {
               value={email}
               disabled={submitting}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@mango.app"
+              placeholder="you@medusa.app"
             />
           </div>
           <div className="space-y-2">

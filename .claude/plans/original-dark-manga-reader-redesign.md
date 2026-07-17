@@ -1,7 +1,7 @@
 # Original dark manga-reader redesign
 
 ## Goal
-Transform the existing public-facing Mango CMS into an original, dark, high-density manga discovery and reading experience. This is an original brand and implementation: no copying of Asura Scans names, artwork, text, proprietary content, or exact UI composition. Existing MongoDB content, routes, reader modes, and admin workflows remain intact.
+Transform the existing public-facing Medusa CMS into an original, dark, high-density manga discovery and reading experience. This is an original brand and implementation: no copying of Asura Scans names, artwork, text, proprietary content, or exact UI composition. Existing MongoDB content, routes, reader modes, and admin workflows remain intact.
 
 ## Confirmed direction
 - User selected **Original inspired site**: use general manga-reader conventions, not a replica.

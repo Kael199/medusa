@@ -64,7 +64,7 @@ export function SignupForm({ registrationOpen }: SignupFormProps) {
         return;
       }
 
-      toast.success("Welcome to Mango");
+      toast.success("Welcome to Medusa");
       router.push(signInRes.url ?? "/admin");
       router.refresh();
     } catch {
@@ -114,7 +114,7 @@ export function SignupForm({ registrationOpen }: SignupFormProps) {
               value={email}
               disabled={submitting || !registrationOpen}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@mango.app"
+              placeholder="you@medusa.app"
             />
           </div>
           <div className="space-y-2">

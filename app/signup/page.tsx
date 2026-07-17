@@ -26,7 +26,7 @@ export default async function SignupPage() {
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">
-            Create your Mango account
+            Create your Medusa account
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Staff sign-up. You&apos;ll need an invite code from an admin.

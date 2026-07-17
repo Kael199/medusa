@@ -83,7 +83,7 @@ async function main() {
   // 3. Settings singleton.
   const settingsExists = await Settings.exists({ _id: "singleton" });
   if (!settingsExists) {
-    await Settings.create({ _id: "singleton", siteName: "Mango", tagline: "Read manga online" });
+    await Settings.create({ _id: "singleton", siteName: "Medusa", tagline: "Read manga online" });
     console.log("Settings singleton created");
   } else {
     console.log("Settings singleton already present");

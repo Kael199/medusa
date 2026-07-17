@@ -201,37 +201,38 @@
   }
 }
 
-/* Original dark reader discovery shell. Scoped to public routes so the admin and reader retain their own semantic theme tokens. */
+/* Medusa public discovery shell. Scoped to public routes so admin and reader keep their semantic themes. */
 .reader-public-shell {
-  --reader-bg: 225 28% 7%;
-  --reader-panel: 224 24% 11%;
-  --reader-panel-strong: 224 22% 14%;
-  --reader-text: 218 35% 94%;
-  --reader-muted: 218 15% 66%;
-  --reader-border: 221 19% 20%;
-  --reader-accent: 11 88% 60%;
-  --reader-accent-strong: 8 91% 55%;
-  --reader-cyan: 188 86% 59%;
+  --reader-bg: 230 30% 4%;
+  --reader-panel: 228 25% 8%;
+  --reader-panel-strong: 226 25% 12%;
+  --reader-text: 220 30% 96%;
+  --reader-muted: 220 14% 65%;
+  --reader-border: 225 23% 20%;
+  --reader-accent: 348 86% 57%;
+  --reader-accent-strong: 350 89% 48%;
+  --reader-cyan: 207 92% 62%;
   color: hsl(var(--reader-text));
   background:
-    radial-gradient(circle at 7% -4%, hsl(11 88% 60% / 0.15), transparent 25rem),
-    radial-gradient(circle at 94% 7%, hsl(188 86% 59% / 0.08), transparent 30rem),
+    radial-gradient(circle at 8% -3%, hsl(348 86% 57% / 0.19), transparent 28rem),
+    radial-gradient(circle at 95% 5%, hsl(207 92% 62% / 0.13), transparent 32rem),
+    radial-gradient(circle at 55% 95%, hsl(228 70% 35% / 0.1), transparent 36rem),
     hsl(var(--reader-bg));
 }
 .reader-public-shell :is(h1, h2, h3) { color: hsl(var(--reader-text)); }
 .reader-public-shell .text-muted-foreground { color: hsl(var(--reader-muted)); }
 .reader-public-shell .border { border-color: hsl(var(--reader-border)); }
 .reader-public-shell .bg-card { background-color: hsl(var(--reader-panel)); }
-.reader-public-shell .bg-muted { background-color: hsl(var(--reader-panel-strong)); }
-.reader-public-shell .bg-accent { background-color: hsl(var(--reader-panel-strong)); }
-.reader-public-shell .hover\:bg-accent:hover { background-color: hsl(var(--reader-panel-strong)); }
+.reader-public-shell .bg-muted,
+.reader-public-shell .bg-accent,
+.reader-public-shell .hover:bg-accent:hover { background-color: hsl(var(--reader-panel-strong)); }
 .reader-public-shell .text-primary { color: hsl(var(--reader-accent)); }
 .reader-public-shell .bg-primary { background-color: hsl(var(--reader-accent)); }
 .reader-public-shell .reader-container { width: 100%; max-width: 90rem; margin-inline: auto; padding-inline: 1rem; }
 .reader-public-shell .reader-panel {
   border: 1px solid hsl(var(--reader-border));
-  background: linear-gradient(135deg, hsl(var(--reader-panel) / 0.95), hsl(var(--reader-panel-strong) / 0.88));
-  box-shadow: 0 22px 55px -36px rgb(0 0 0 / 0.8);
+  background: linear-gradient(135deg, hsl(var(--reader-panel) / 0.97), hsl(var(--reader-panel-strong) / 0.92));
+  box-shadow: 0 24px 60px -38px rgb(0 0 0 / 0.92), inset 0 1px 0 hsl(0 0% 100% / 0.04);
 }
 .reader-public-shell .reader-kicker {
   color: hsl(var(--reader-accent));
@@ -242,8 +243,8 @@
 }
 .reader-public-shell .reader-grid-bg {
   background-image:
-    linear-gradient(hsl(218 35% 94% / 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(218 35% 94% / 0.035) 1px, transparent 1px);
+    linear-gradient(hsl(220 30% 96% / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(220 30% 96% / 0.03) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 .reader-public-shell .reader-input {
@@ -252,8 +253,15 @@
   color: hsl(var(--reader-text));
 }
 .reader-public-shell .reader-input::placeholder { color: hsl(var(--reader-muted)); }
-.reader-public-shell .reader-input:focus-visible { --tw-ring-color: hsl(var(--reader-accent)); }
-
+.reader-public-shell .reader-input:focus-visible { --tw-ring-color: hsl(var(--reader-cyan)); }
+.reader-public-shell .medusa-surface {
+  border: 1px solid hsl(var(--reader-border));
+  background: linear-gradient(135deg, hsl(228 25% 10% / 0.94), hsl(230 30% 6% / 0.96));
+  box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.05), 0 24px 60px -40px rgb(0 0 0 / 0.95);
+}
+.reader-public-shell .medusa-edge {
+  background: linear-gradient(90deg, hsl(var(--reader-accent)), hsl(var(--reader-cyan)));
+}
 /* Reader-specific helpers */
 .webtoon-strip img {
   display: block;

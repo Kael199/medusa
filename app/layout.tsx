@@ -16,7 +16,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: { default: "Mango", template: "%s · Mango" },
+  title: { default: "Medusa", template: "%s · Medusa" },
   description: "Read manga, manhwa and manhua online.",
 };
 

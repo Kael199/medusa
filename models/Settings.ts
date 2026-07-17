@@ -7,7 +7,7 @@ import { READER_MODES, type ReaderMode } from "@/lib/constants";
 const SettingsSchema = new Schema(
   {
     _id: { type: String, default: "singleton" },
-    siteName: { type: String, default: "Mango" },
+    siteName: { type: String, default: "Medusa" },
     tagline: { type: String, default: "" },
     defaultReaderMode: { type: String, enum: READER_MODES, default: "paginated" },
     announcements: { type: [String], default: [] },

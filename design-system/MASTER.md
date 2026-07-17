@@ -1,4 +1,4 @@
-# Mango Manga CMS — Master Design System
+# Medusa Manga CMS — Master Design System
 
 Style: **content-dense, dark-mode-first manga reader** with Asurascans-inspired polish.
 Generated 2026-07-05. Source of truth for all UI tokens. Page-level overrides go in `pages/<page>.md`.

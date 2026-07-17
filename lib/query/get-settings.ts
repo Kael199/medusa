@@ -17,7 +17,7 @@ export interface PublicSettings {
 }
 
 const DEFAULTS: PublicSettings = {
-  siteName: "Mango",
+  siteName: "Medusa",
   tagline: "Read manga, manhwa and manhua online.",
   defaultReaderMode: "paginated",
   announcements: [],

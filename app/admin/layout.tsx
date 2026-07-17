@@ -54,7 +54,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   });
 
   // Pull the configured site name for the chrome header.
-  let siteName = "Mango";
+  let siteName = "Medusa";
   try {
     const settings = await Settings.findById("singleton").lean() as unknown as { siteName?: string } | null;
     if (settings && settings.siteName) siteName = settings.siteName;

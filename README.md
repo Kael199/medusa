@@ -1,4 +1,4 @@
-# Mango — Manga CMS with full-control Admin Panel
+# Medusa — Manga CMS with full-control Admin Panel
 
 A self-hosted manga / manhwa / manhua CMS built on **Next.js 16** (App Router, Turbopack, React 19.2 Server Components + Server Actions) and **MongoDB** (Mongoose for app data, raw `MongoClient` for the Auth.js adapter). No scrapers — you upload your own content. Role-based staff access controls everything.
 
@@ -91,12 +91,12 @@ Open http://localhost:3000, then go to `/login` and sign in with your seeded Sup
 
 ## Deploying to Vercel
 
-1. **Create a free MongoDB Atlas cluster** and whitelist `0.0.0.0/0` (or add Vercel's egress IPs once you know them). Copy the connection string — it looks like `mongodb+srv://USER:PASS@cluster0.xxxxx.mongodb.net/mango?retryWrites=true&w=majority`.
+1. **Create a free MongoDB Atlas cluster** and whitelist `0.0.0.0/0` (or add Vercel's egress IPs once you know them). Copy the connection string — it looks like `mongodb+srv://USER:PASS@cluster0.xxxxx.mongodb.net/medusa?retryWrites=true&w=majority`.
 2. **Push to GitHub** and import the repo in Vercel. The included `vercel.json` pins the framework to Next.js and uses the standard `npm run build`.
 3. **Set environment variables** in Project Settings → Environment Variables:
    - `MONGODB_URI` — your Atlas connection string (Production / Preview / Development as needed).
    - `AUTH_SECRET` — generate with `npx auth secret` or `openssl rand -base64 33`.
-   - `NEXT_PUBLIC_APP_URL` — set to your Vercel domain (e.g. `https://mango.vercel.app`).
+   - `NEXT_PUBLIC_APP_URL` — set to your Vercel domain (e.g. `https://medusa.vercel.app`).
    - `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` — your super-admin login.
    - `STAFF_INVITE_CODE` *(optional)* — set this to enable `/signup`; leave unset to keep it disabled.
 4. **Seed the super-admin.** Vercel's build step does NOT run the seeder (you don't want a side-effecting CLI in the build pipeline). After the first deploy, run `SEED_ADMIN_EMAIL=… SEED_ADMIN_PASSWORD=… MONGODB_URI=… npm run seed` locally pointed at the production DB — or use a one-off Vercel Cron / `vercel env pull` + `npm run seed`.

@@ -6,7 +6,7 @@ import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { Footer } from "@/components/public/Footer";
 
 export const metadata: Metadata = {
-  title: { default: "Mango", template: "%s · Mango" },
+  title: { default: "Medusa", template: "%s · Medusa" },
   description: "Read manga, manhwa and manhua online.",
 };
 
