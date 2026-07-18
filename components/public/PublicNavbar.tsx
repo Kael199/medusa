@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import {
   BookOpen,
-  Command,
   LogIn,
   Menu,
   Search,
@@ -42,14 +41,6 @@ function isActiveLink(href: string, pathname: string): boolean {
 export function PublicNavbar({ siteName }: PublicNavbarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [isMac, setIsMac] = useState(false);
-
-  // Detect platform so the kbd shows the right modifier (⌘ on mac, Ctrl elsewhere).
-  useEffect(() => {
-    if (typeof navigator !== "undefined") {
-      setIsMac(/Mac|iPod|iPhone|iPad/.test(navigator.platform));
-    }
-  }, []);
 
   // Close the mobile drawer whenever the route changes.
   useEffect(() => {
@@ -163,8 +154,28 @@ export function PublicNavbar({ siteName }: PublicNavbarProps) {
           })}
         </nav>
 
-        {/* Search trigger — ⌘K pill on md+, icon on sm */}
-        <SearchCommandPill isMac={isMac} />
+        {/* Search — SearchBar owns its own icon + ⌘K kbd adornments. */}
+        <div className="ml-auto hidden w-full max-w-sm md:block">
+          <SearchBar className="block" />
+        </div>
+
+        {/* Icon-only fallback on small screens */}
+        <Link
+          href="/search"
+          aria-label="Search"
+          className={cn(
+            "ml-auto grid h-9 w-9 place-items-center rounded-md",
+            "border border-[hsl(var(--reader-border))]",
+            "text-[hsl(var(--reader-muted))]",
+            "motion-safe:transition-all motion-safe:duration-200",
+            "hover:border-[hsl(var(--neon-cyan))]/60 hover:text-[hsl(var(--neon-cyan))]",
+            "hover:shadow-[0_0_0_1px_hsl(var(--neon-cyan)/0.3),0_0_18px_-6px_hsl(var(--neon-cyan)/0.55)]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--reader-cyan))]",
+            "md:hidden",
+          )}
+        >
+          <Search className="h-4 w-4" />
+        </Link>
 
         {/* Sign-in CTA */}
         <Link
@@ -318,7 +329,7 @@ export function PublicNavbar({ siteName }: PublicNavbarProps) {
                   </Link>
                 </SheetClose>
                 <p className="mt-3 text-center text-[10px] uppercase tracking-[0.18em] text-[hsl(var(--reader-muted))]">
-                  {isMac ? "Press ⌘ K to search" : "Press Ctrl + K to search"}
+                  Press ⌘ K to search
                 </p>
               </div>
 
@@ -329,87 +340,6 @@ export function PublicNavbar({ siteName }: PublicNavbarProps) {
         </div>
       </div>
     </header>
-  );
-}
-
-/**
- * ⌘K command-pill search trigger.
- *
- * - md+ : renders the SearchBar inline inside a glowing pill; the kbd hint
- *         ("⌘ K" on macOS, "Ctrl K" elsewhere) sits at the right.
- * - sm only : collapses to a small icon button that navigates to /search.
- * - The pill's hover/focus state glows with cyan.
- */
-function SearchCommandPill({ isMac }: { isMac: boolean }) {
-  return (
-    <>
-      {/* Pill (md+) */}
-      <div className="ml-auto hidden w-full max-w-sm md:block">
-        <div
-          className={cn(
-            "group relative flex items-center",
-            "rounded-md border border-[hsl(var(--reader-border))]",
-            "bg-[hsl(var(--reader-panel))]/80 backdrop-blur",
-            "motion-safe:transition-all motion-safe:duration-300",
-            "hover:border-[hsl(var(--neon-cyan))]/60",
-            "hover:shadow-[0_0_0_1px_hsl(var(--neon-cyan)/0.35),0_0_24px_-6px_hsl(var(--neon-cyan)/0.55)]",
-            "focus-within:border-[hsl(var(--neon-cyan))]/70",
-            "focus-within:shadow-[0_0_0_1px_hsl(var(--neon-cyan)/0.45),0_0_28px_-6px_hsl(var(--neon-cyan)/0.7)]",
-          )}
-        >
-          <Search
-            aria-hidden
-            className="pointer-events-none ml-3 h-4 w-4 shrink-0 text-[hsl(var(--reader-muted))] transition-colors group-hover:text-[hsl(var(--neon-cyan))] group-focus-within:text-[hsl(var(--neon-cyan))]"
-          />
-          <div className="flex-1">
-            <SearchBar
-              className={cn(
-                "[&>input]:h-9 [&>input]:w-full [&>input]:rounded-md",
-                "[&>input]:border-0 [&>input]:bg-transparent",
-                "[&>input]:px-2 [&>input]:text-sm",
-                "[&>input]:text-[hsl(var(--reader-text))]",
-                "[&>input]:placeholder:text-[hsl(var(--reader-muted))]",
-                "[&>input]:focus-visible:outline-none [&>input]:focus-visible:ring-0",
-                "[&>input]:shadow-none",
-              )}
-            />
-          </div>
-          <kbd
-            aria-hidden
-            className={cn(
-              "mr-2 inline-flex items-center gap-1 rounded-md",
-              "border border-[hsl(var(--reader-border))] bg-[hsl(var(--reader-bg))]/60",
-              "px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em]",
-              "text-[hsl(var(--reader-muted))]",
-              "motion-safe:transition-colors motion-safe:duration-200",
-              "group-hover:border-[hsl(var(--neon-cyan))]/50 group-hover:text-[hsl(var(--neon-cyan))]",
-              "group-focus-within:border-[hsl(var(--neon-cyan))]/60 group-focus-within:text-[hsl(var(--neon-cyan))]",
-            )}
-          >
-            <Command className="h-3 w-3" />
-            {isMac ? "K" : "Ctrl K"}
-          </kbd>
-        </div>
-      </div>
-
-      {/* Icon-only fallback (sm) */}
-      <Link
-        href="/search"
-        aria-label="Search"
-        className={cn(
-          "ml-auto grid h-9 w-9 place-items-center rounded-md",
-          "border border-[hsl(var(--reader-border))]",
-          "text-[hsl(var(--reader-muted))]",
-          "motion-safe:transition-all motion-safe:duration-200",
-          "hover:border-[hsl(var(--neon-cyan))]/60 hover:text-[hsl(var(--neon-cyan))]",
-          "hover:shadow-[0_0_0_1px_hsl(var(--neon-cyan)/0.3),0_0_18px_-6px_hsl(var(--neon-cyan)/0.55)]",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--reader-cyan))]",
-          "md:hidden",
-        )}
-      >
-        <Search className="h-4 w-4" />
-      </Link>
-    </>
   );
 }
 
