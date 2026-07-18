@@ -1,104 +1,92 @@
-# Medusa — Manga CMS with full-control Admin Panel
+# 📖 MangaVerse — Манга & Манхва уншдаг платформ
 
-A self-hosted manga / manhwa / manhua CMS built on **Next.js 16** (App Router, Turbopack, React 19.2 Server Components + Server Actions) and **MongoDB** (Mongoose for app data, raw `MongoClient` for the Auth.js adapter). No scrapers — you upload your own content. Role-based staff access controls everything.
+Сүүлийн үеийн дизайн бүхий, Vercel-д бэлэн манга/манхва уншдаг вэбсайт.
+Монгол хэл дээрх UI, бүрэн админ панел, VIP chapter системтэй.
 
-## Features
+## ✨ Онцлог
 
-**Public site**
-- Home page with recently-updated and popular manga
-- Browse + search with filters (status, type, genre, sort) and full-text search
-- Manga detail page (cover/banner, metadata, genres/tags, chapters, OG image)
-- Reader with three modes: **paginated**, **list**, **webtoon long-strip**
-- Reading progress saved in `localStorage` (no accounts)
-- Sitemap + robots
+- 🎨 **Сүүлийн үеийн UI/UX** — Dark mode, glass morphism, gradient accent, smooth animations
+- 📚 **Манга, манхва, manhua, webtoon** төрөл бүрийн каталог
+- 🔍 **Хайлт** + шүүлт (төрөл, төлөв, жанр)
+- 📖 **Уншлагын горимууд** — "Long strip" (бүтэн хуудсаар scroll) ба "Single" (нэг нэгээр, arrow keys)
+- 👑 **VIP систем** — түгжээтэй chapter-уудыг VIP гишүүд уншина
+- 🛡️ **Админ панел** — манга нэмэх, засах, устгах, chapter удирдах, хэрэглэгч харах
+- 🔐 **JWT аутентикашн** — register / login / logout, httpOnly cookies
+- ⭐ **Bookmark** — дуртай мангаа хадгалах
+- 📱 **Responsive** — гар утас, таблет, компьютер дээр ажиллана
 
-**Admin panel** (`/admin`, staff-only)
-- Dashboard with stats
-- Manga CRUD (create / edit / publish / unpublish / hide / delete)
-- Chapter manager (create, upload pages, reorder, publish)
-- Genres & tags management
-- Uploads library
-- Staff users + roles (Super-Admin / Editor / Uploader)
-- Site settings (name, tagline, default reader mode, announcements, maintenance)
+## 🚀 Vercel-д deploy хийх
 
-## Roles
+1. **GitHub-д push**:
+   ```bash
+   git init && git add . && git commit -m "init"
+   git remote add origin <your-repo>
+   git push -u origin main
+   ```
 
-| Asset | super-admin | editor | uploader |
-|---|:--:|:--:|:--:|
-| Use admin panel | ✓ | ✓ | ✓ |
-| Create manga / chapter | ✓ | ✓ | own drafts only |
-| Edit any / own | any | any | own only |
-| Publish | ✓ | ✓ | ✗ |
-| Delete | ✓ | ✓ | ✗ |
-| Manage genres/tags | ✓ | ✓ | ✗ |
-| Upload files | ✓ | ✓ | ✗ (view only) |
-| Manage staff & settings | ✓ | ✗ | ✗ |
+2. **[Vercel](https://vercel.com/new)** дээр import дарна.
 
-Enforcement happens in the Server Actions + Server Components (the middleware is UX-only). The "uploader == own drafts only" rule is enforced at the data layer via `uploadedById` own-checks.
+3. **Environment Variables** (Settings → Environment Variables):
+   ```
+   AUTH_SECRET = <32-тэмдэгтлүүрийн санамсаргүй string>
+   BLOB_READ_WRITE_TOKEN = (Vercel Blob Storage-с)
+   KV_REST_API_URL, KV_REST_API_TOKEN = (Vercel KV-с, optional)
+   ```
 
-## Quick start
+4. **Deploy** → бэлэн!
+
+> Анхаар: анхны deploy-д in-memory data ашиглана (demo-г шууд ажиллуулна). Бодит production-д Vercel KV холбож, өгөгдлийг тогтмол хадгална.
+
+## 🛠️ Local development
 
 ```bash
-# 1. Install dependencies
 npm install
-
-# 2. Configure environment
-cp .env.local.example .env.local
-#    - MONGODB_URI      (local Mongo or Atlas free tier)
-#    - AUTH_SECRET       (generate with: npx auth secret)
-#    - SEED_ADMIN_EMAIL
-#    - SEED_ADMIN_PASSWORD  (>= 8 chars)
-
-# 3. Seed the Super-Admin + starter genres
-npm run seed
-
-# 4. Run dev server
 npm run dev
 ```
 
-Open http://localhost:3000, then go to `/login` and sign in with your seeded Super-Admin. You'll be redirected to `/admin`.
+http://localhost:3000 нээ.
 
-## Scripts
+**Demo эрхүүд**:
 
-| Command | Purpose |
-|---|---|
-| `npm run dev` | Next dev (Turbopack) |
-| `npm run build` | Production build (also runs typegen + typecheck) |
-| `npm run start` | Production server |
-| `npm run seed` | Idempotent first-run seeder (Super-Admin + genres + Settings) |
-| `npm run lint` | ESLint |
-| `npm run typegen` | Regenerate Next route types (PageProps) |
+| Эрх | Имэйл | Нууц үг | Тайлбар |
+|---|---|---|---|
+| Admin | admin@mangaverse.mn | `admin123` | Бүх эрхтэй |
+| VIP | vip@mangaverse.mn | `vip123` | VIP гишүүн |
+| User | reader@mangaverse.mn | `reader123` | Энгийн хэрэглэгч |
 
-## Architecture notes
+## 🏗️ Технологи
 
-- **Two DB connections, one URI.** `lib/db/client.ts` caches a raw `MongoClient` for the Auth.js `MongoDBAdapter` (it requires an already-connected client). `lib/db/mongoose.ts` caches the Mongoose connection the app's own models use. Both share `MONGODB_URI` and `globalThis` caches to survive dev HMR.
-- **Auth.js v5.** Credentials provider, JWT strategy (avoids a session round-trip and lets us carry the staff role cheaply), `jwt` + `session` callbacks stamp `id`/`role`/`active`. `password` is `select:false`. Module augmentation in `lib/auth/next-auth.d.ts` keeps the session typed.
-- **Images** are stored on the local filesystem under `public/uploads/manga/{mangaId}/{covers|banners|chapters/{chapterId}}/`. Upload Server Action validates magic bytes (rejects SVG), enforces size/count caps, validates ObjectIds (blocks path traversal), and converts to webp via `sharp`. See **v1 limitation** below.
+- **Next.js 14** (App Router, Server Actions, RSC)
+- **TypeScript** strict mode
+- **Tailwind CSS** (custom dark theme)
+- **Framer Motion** animations (бэлэн)
+- **Zustand** (бэлэн)
+- **lucide-react** icons
+- **bcryptjs** + **jose** (auth)
+- **Vercel KV** + **Vercel Blob** (storage, optional)
 
-### v1 limitations / known gaps (documented, not blocking)
+## 📁 Бүтэц
 
-- **Read-only filesystem on serverless.** `public/uploads/` writes work on a normal dev machine, a VM, or a Docker volume, but **not on Vercel/serverless** where the FS is read-only. To deploy serverless, swap `lib/actions/upload.ts` for a blob/S3 variant — the relative-URL contract makes this a one-file change.
-- **No rate limiting.** There is no IP throttle on `/api/auth/callback/credentials` or on the upload action. Mitigations present: bcrypt hashing, magic-byte upload checks, RBAC on every mutation. Add `@upstash/ratelimit` (or middleware-level) throttling before going to production. A clean seam is left in `lib/auth/config.ts` and `lib/actions/upload.ts`.
-- **No public reader accounts.** Reading progress is purely client-side `localStorage`. Bookmarking/commenting/registration are out of scope for v1.
-- **Middleware is UX-only.** It redirects unauthenticated visitors away from `/admin`, but the real security boundary is the Server Actions / Server Components guarded by `getCurrentUser()` + `assertCan()`. Never rely on middleware alone — Server Actions can be invoked from anywhere.
+```
+src/
+├── app/
+│   ├── (routes) — нүүр, browse, manga/[slug], read/[slug]/[chapter]
+│   ├── login, register, profile, vip, admin, about
+│   ├── actions/ — auth, admin, bookmark server actions
+│   └── layout.tsx, globals.css
+├── components/ — Header, Footer, MangaCard, Reader, admin forms...
+├── lib/ — db.ts (in-memory/KV), auth.ts (JWT), types.ts, seed.ts
+└── middleware.ts — auto-seed
+```
 
-## Security posture at a glance
-- Passwords hashed with bcrypt (12 rounds), `select:false`, constant-time-ish compare (`verifyPassword` + `dummyVerify`).
-- Server Actions CSRF-protected by Next 16 defaults (signed action id + origin check). `allowedOrigins` is **not** relaxed.
-- Public query builders use closed allowlists; Mongo operator keys (`$gt`, `$where`, …) are dropped — defenses against NoSQL injection.
-- IDOR: every mutation loads the resource, checks `can(role, "…:editAny")` / `editOwn` (`uploadedById.equals(user.id)`), and rejects otherwise.
-- File upload: magic-byte sniff, size + count caps, reject SVG, server-generated filenames (never the user's), ObjectId-validated path components.
+## 🔧 Өргөтгөх
 
-## Deploying to Vercel
+Production-д солих зүйлс:
+- `src/lib/db.ts` — in-memory Map-ийг Vercel KV-ээр солих (хэдэн мөр)
+- `src/lib/auth.ts` — `AUTH_SECRET`-ийг бодит secret-ээр солих
+- Админ password-ыг анхны deploy-ын дараа солих
+- Vercel Blob ашиглаж зураг upload хийх (одоо URL оруулж байгаа)
 
-1. **Create a free MongoDB Atlas cluster** and whitelist `0.0.0.0/0` (or add Vercel's egress IPs once you know them). Copy the connection string — it looks like `mongodb+srv://USER:PASS@cluster0.xxxxx.mongodb.net/medusa?retryWrites=true&w=majority`.
-2. **Push to GitHub** and import the repo in Vercel. The included `vercel.json` pins the framework to Next.js and uses the standard `npm run build`.
-3. **Set environment variables** in Project Settings → Environment Variables:
-   - `MONGODB_URI` — your Atlas connection string (Production / Preview / Development as needed).
-   - `AUTH_SECRET` — generate with `npx auth secret` or `openssl rand -base64 33`.
-   - `NEXT_PUBLIC_APP_URL` — set to your Vercel domain (e.g. `https://medusa.vercel.app`).
-   - `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` — your super-admin login.
-   - `STAFF_INVITE_CODE` *(optional)* — set this to enable `/signup`; leave unset to keep it disabled.
-4. **Seed the super-admin.** Vercel's build step does NOT run the seeder (you don't want a side-effecting CLI in the build pipeline). After the first deploy, run `SEED_ADMIN_EMAIL=… SEED_ADMIN_PASSWORD=… MONGODB_URI=… npm run seed` locally pointed at the production DB — or use a one-off Vercel Cron / `vercel env pull` + `npm run seed`.
-5. **Uploads caveat.** Vercel's serverless filesystem is read-only — `public/uploads/` writes are fine locally but will not persist in production. The codebase is structured so swapping `lib/actions/upload.ts` for an S3/Blob adapter is a one-file change. Don't enable uploads on Vercel until you do.
-6. **Auth.js callback URL.** When configuring OAuth later, set the callback to `${NEXT_PUBLIC_APP_URL}/api/auth/callback/<provider>`. Credentials provider needs no callback config.
+## License
+
+MIT
