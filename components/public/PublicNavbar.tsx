@@ -1,13 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, BookOpen, Search, LogIn, X } from "lucide-react";
+import {
+  BookOpen,
+  Command,
+  LogIn,
+  Menu,
+  Search,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
-  SheetTrigger,
   SheetContent,
   SheetTitle,
   SheetClose,
@@ -19,97 +26,304 @@ interface PublicNavbarProps {
   siteName: string;
 }
 
+const NAV_LINKS = [
+  { href: "/browse", label: "Library" },
+  { href: "/browse?sort=latest", label: "Updates" },
+  { href: "/search", label: "Search" },
+] as const;
+
+function isActiveLink(href: string, pathname: string): boolean {
+  if (href === "/browse?sort=latest") {
+    return pathname === "/browse";
+  }
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function PublicNavbar({ siteName }: PublicNavbarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const navLinks = [
-    { href: "/browse", label: "Library" },
-    { href: "/browse?sort=latest", label: "Updates" },
-    { href: "/search", label: "Search" },
-  ];
+  const [isMac, setIsMac] = useState(false);
+
+  // Detect platform so the kbd shows the right modifier (⌘ on mac, Ctrl elsewhere).
+  useEffect(() => {
+    if (typeof navigator !== "undefined") {
+      setIsMac(/Mac|iPod|iPhone|iPad/.test(navigator.platform));
+    }
+  }, []);
+
+  // Close the mobile drawer whenever the route changes.
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  // Global ⌘K / Ctrl+K shortcut — focuses the search input when present.
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      const isShortcut =
+        (event.metaKey || event.ctrlKey) &&
+        event.key.toLowerCase() === "k";
+      if (!isShortcut) return;
+      const input = document.querySelector<HTMLInputElement>(
+        'input[type="search"][aria-label="Search manga"]',
+      );
+      if (input) {
+        event.preventDefault();
+        input.focus();
+        input.select();
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-[#10131d]/90 text-[hsl(var(--reader-text))] backdrop-blur-xl">
-      <div className="reader-container flex h-16 items-center gap-3">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label={`${siteName} home`}>
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-[hsl(var(--reader-accent))] text-white shadow-[0_8px_22px_-10px_hsl(var(--reader-accent)/0.8)]">
-            <BookOpen className="h-5 w-5" />
+    <header
+      className={cn(
+        "sticky top-0 z-40 w-full",
+        "glass-strong",
+        "border-b border-[hsl(var(--reader-border))]/70",
+      )}
+    >
+      {/* Neon gradient hairline under the navbar border */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent 0%, hsl(var(--neon-magenta)) 18%, hsl(var(--neon-violet)) 50%, hsl(var(--neon-cyan)) 82%, transparent 100%)",
+          opacity: 0.55,
+        }}
+      />
+
+      <div className="reader-container relative flex h-16 items-center gap-3">
+        {/* Brand */}
+        <Link
+          href="/"
+          aria-label={`${siteName} home`}
+          className="group flex shrink-0 items-center gap-2.5 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--reader-cyan))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--reader-bg))]"
+        >
+          <span
+            className={cn(
+              "relative grid h-9 w-9 place-items-center overflow-hidden rounded-lg",
+              "bg-gradient-to-br from-[hsl(var(--neon-magenta))] via-[hsl(var(--neon-violet))] to-[hsl(var(--neon-cyan))]",
+              "text-white shadow-[0_8px_24px_-10px_hsl(var(--neon-magenta)/0.7)]",
+              "motion-safe:transition-shadow motion-safe:duration-300",
+              "group-hover:shadow-[0_0_24px_-2px_hsl(var(--neon-magenta)/0.7),0_0_24px_-2px_hsl(var(--neon-cyan)/0.6)]",
+              "group-focus-visible:shadow-[0_0_24px_-2px_hsl(var(--neon-cyan)/0.8)]",
+            )}
+          >
+            <BookOpen className="h-5 w-5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]" />
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-white/0 via-white/30 to-white/0 opacity-0 motion-safe:transition-opacity motion-safe:duration-500 group-hover:opacity-100"
+            />
           </span>
-          <span className="hidden text-base font-black uppercase tracking-[0.08em] sm:inline">{siteName}</span>
+          <span className="hidden text-base font-black uppercase tracking-[0.08em] sm:inline">
+            <span className="text-neon-gradient">{siteName}</span>
+          </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
-          {navLinks.map((link) => {
-            const active = link.href === "/browse?sort=latest"
-              ? pathname === "/browse"
-              : pathname === link.href || pathname.startsWith(`${link.href}/`);
+        {/* Primary nav */}
+        <nav
+          className="hidden items-center gap-1 lg:flex"
+          aria-label="Primary navigation"
+        >
+          {NAV_LINKS.map((link) => {
+            const active = isActiveLink(link.href, pathname);
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "rounded-md px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] transition-colors",
+                  "group relative inline-flex items-center rounded-md px-3 py-2",
+                  "text-xs font-bold uppercase tracking-[0.12em]",
+                  "outline-none transition-colors duration-200",
+                  "focus-visible:ring-2 focus-visible:ring-[hsl(var(--reader-cyan))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--reader-bg))]",
                   active
-                    ? "bg-white/10 text-white"
-                    : "text-[hsl(var(--reader-muted))] hover:bg-white/5 hover:text-white",
+                    ? "text-white"
+                    : "text-[hsl(var(--reader-muted))] hover:text-white motion-safe:hover:[text-shadow:0_0_18px_hsl(var(--neon-cyan)/0.55)]",
                 )}
               >
-                {link.label}
+                <span className="relative z-10">{link.label}</span>
+                {active && (
+                  <span
+                    aria-hidden
+                    className="absolute inset-x-2 -bottom-0.5 h-[2px] rounded-full bg-gradient-to-r from-[hsl(var(--neon-magenta))] via-[hsl(var(--neon-violet))] to-[hsl(var(--neon-cyan))] bg-[length:200%_100%] motion-safe:animate-shimmer"
+                  />
+                )}
+                {!active && (
+                  <span
+                    aria-hidden
+                    className="absolute inset-x-2 -bottom-0.5 h-[2px] origin-left scale-x-0 rounded-full bg-gradient-to-r from-[hsl(var(--neon-magenta))] via-[hsl(var(--neon-violet))] to-[hsl(var(--neon-cyan))] opacity-0 transition-all duration-300 ease-out group-hover:scale-x-100 group-hover:opacity-90 motion-safe:group-hover:animate-shimmer"
+                  />
+                )}
               </Link>
             );
           })}
         </nav>
 
-        <div className="ml-auto hidden w-full max-w-sm xl:block">
-          <SearchBar className="[&>input]:reader-input [&>input]:h-9 [&>input]:rounded-md [&>input]:text-sm" />
-        </div>
+        {/* Search trigger — ⌘K pill on md+, icon on sm */}
+        <SearchCommandPill isMac={isMac} />
 
-        <Link
-          href="/search"
-          className="ml-auto grid h-9 w-9 place-items-center rounded-md border border-white/10 text-[hsl(var(--reader-muted))] transition hover:border-white/20 hover:text-white xl:hidden"
-          aria-label="Search"
-        >
-          <Search className="h-4 w-4" />
-        </Link>
+        {/* Sign-in CTA */}
         <Link
           href="/login"
-          className="hidden items-center gap-2 rounded-md bg-[hsl(var(--reader-accent))] px-3.5 py-2 text-xs font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[hsl(var(--reader-accent-strong))] sm:inline-flex"
+          className={cn(
+            "ml-auto inline-flex h-9 items-center gap-2 rounded-md px-3.5",
+            "text-xs font-bold uppercase tracking-[0.12em] text-white",
+            "bg-gradient-to-r from-[hsl(var(--neon-magenta))] via-[hsl(var(--neon-violet))] to-[hsl(var(--neon-cyan))]",
+            "bg-[length:200%_100%] bg-[position:0%_50%]",
+            "shadow-[0_8px_24px_-10px_hsl(var(--neon-magenta)/0.7),0_0_0_1px_hsl(var(--neon-violet)/0.4)_inset]",
+            "motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out",
+            "hover:bg-[position:100%_50%] hover:shadow-[0_10px_28px_-8px_hsl(var(--neon-magenta)/0.85),0_0_28px_-4px_hsl(var(--neon-cyan)/0.6),0_0_0_1px_hsl(var(--neon-cyan)/0.55)_inset] motion-safe:hover:scale-[1.03]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--reader-cyan))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--reader-bg))]",
+            "sm:inline-flex",
+          )}
         >
-          <LogIn className="h-3.5 w-3.5" /> Sign in
+          <LogIn className="h-3.5 w-3.5" />
+          <span>Sign in</span>
         </Link>
 
+        {/* Mobile menu */}
         <div className="lg:hidden">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Open menu" className="text-white hover:bg-white/10 hover:text-white">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileOpen}
+              onClick={() => setMobileOpen((v) => !v)}
+              className={cn(
+                "h-9 w-9 rounded-md text-[hsl(var(--reader-text))]",
+                "hover:bg-white/5 hover:text-white",
+                "focus-visible:ring-2 focus-visible:ring-[hsl(var(--reader-cyan))]",
+              )}
+            >
+              {mobileOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
                 <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-80 border-white/10 bg-[#121620] p-5 text-[hsl(var(--reader-text))]">
-              <SheetTitle className="flex items-center justify-between text-[hsl(var(--reader-text))]">
-                <span className="flex items-center gap-2 font-black uppercase tracking-[0.08em]">
-                  <BookOpen className="h-5 w-5 text-[hsl(var(--reader-accent))]" /> {siteName}
-                </span>
-                <SheetClose className="rounded-md p-1 text-[hsl(var(--reader-muted))] hover:bg-white/10 hover:text-white" aria-label="Close menu">
+              )}
+            </Button>
+
+            <SheetContent
+              side="right"
+              className={cn(
+                "w-[min(22rem,90vw)] border-l border-[hsl(var(--reader-border))]",
+                "bg-[hsl(var(--reader-panel))] text-[hsl(var(--reader-text))]",
+                "p-0",
+              )}
+            >
+              <SheetTitle className="sr-only">Site navigation</SheetTitle>
+
+              {/* Brand row */}
+              <div className="flex items-center justify-between border-b border-[hsl(var(--reader-border))] px-5 py-4">
+                <Link
+                  href="/"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-2.5 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--reader-cyan))]"
+                >
+                  <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-[hsl(var(--neon-magenta))] via-[hsl(var(--neon-violet))] to-[hsl(var(--neon-cyan))] text-white shadow-[0_8px_22px_-10px_hsl(var(--neon-magenta)/0.8)]">
+                    <BookOpen className="h-4 w-4" />
+                  </span>
+                  <span className="text-sm font-black uppercase tracking-[0.1em] text-neon-gradient">
+                    {siteName}
+                  </span>
+                </Link>
+                <SheetClose
+                  className={cn(
+                    "rounded-md p-1.5 text-[hsl(var(--reader-muted))]",
+                    "hover:bg-white/5 hover:text-white",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--reader-cyan))]",
+                  )}
+                  aria-label="Close menu"
+                >
                   <X className="h-4 w-4" />
                 </SheetClose>
-              </SheetTitle>
-              <div className="mt-6">
-                <SearchBar onSubmitted={() => setMobileOpen(false)} className="[&>input]:reader-input" />
               </div>
-              <nav className="mt-6 flex flex-col gap-1" aria-label="Mobile navigation">
-                {navLinks.map((link) => (
-                  <SheetClose asChild key={link.href}>
-                    <Link href={link.href} className="rounded-md px-3 py-3 text-sm font-bold uppercase tracking-[0.12em] text-[hsl(var(--reader-muted))] hover:bg-white/5 hover:text-white">
-                      {link.label}
-                    </Link>
-                  </SheetClose>
-                ))}
+
+              {/* Nav links (staggered) */}
+              <nav
+                className="flex flex-col gap-1 px-3 py-4"
+                aria-label="Mobile navigation"
+              >
+                {NAV_LINKS.map((link, index) => {
+                  const active = isActiveLink(link.href, pathname);
+                  return (
+                    <SheetClose asChild key={link.href}>
+                      <Link
+                        href={link.href}
+                        aria-current={active ? "page" : undefined}
+                        style={{ animationDelay: `${index * 30}ms` }}
+                        className={cn(
+                          "motion-safe:animate-slide-in-right",
+                          "group flex items-center justify-between rounded-lg px-3 py-3",
+                          "text-sm font-bold uppercase tracking-[0.12em]",
+                          "outline-none transition-all duration-200",
+                          "focus-visible:ring-2 focus-visible:ring-[hsl(var(--reader-cyan))]",
+                          active
+                            ? "bg-white/[0.06] text-white shadow-[inset_1px_0_0_hsl(var(--neon-magenta)),inset_-1px_0_0_hsl(var(--neon-cyan))]"
+                            : "text-[hsl(var(--reader-muted))] hover:bg-white/5 hover:text-white",
+                        )}
+                      >
+                        <span className="flex items-center gap-3">
+                          <span
+                            aria-hidden
+                            className={cn(
+                              "h-1.5 w-1.5 rounded-full",
+                              active
+                                ? "bg-gradient-to-r from-[hsl(var(--neon-magenta))] to-[hsl(var(--neon-cyan))] shadow-[0_0_8px_hsl(var(--neon-magenta)/0.7)]"
+                                : "bg-[hsl(var(--reader-border))] group-hover:bg-[hsl(var(--reader-cyan))]",
+                            )}
+                          />
+                          {link.label}
+                        </span>
+                        <Sparkles
+                          aria-hidden
+                          className={cn(
+                            "h-3.5 w-3.5 transition-opacity",
+                            active
+                              ? "text-[hsl(var(--neon-cyan))] opacity-100"
+                              : "text-[hsl(var(--reader-muted))] opacity-0 group-hover:opacity-100",
+                          )}
+                        />
+                      </Link>
+                    </SheetClose>
+                  );
+                })}
               </nav>
-              <Link href="/login" className="mt-6 flex items-center justify-center gap-2 rounded-md bg-[hsl(var(--reader-accent))] px-4 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white" onClick={() => setMobileOpen(false)}>
-                <LogIn className="h-4 w-4" /> Sign in
-              </Link>
+
+              {/* Divider */}
+              <div className="mx-5 my-2 h-px bg-gradient-to-r from-transparent via-[hsl(var(--reader-border))] to-transparent" />
+
+              {/* Footer pinned CTA */}
+              <div className="absolute inset-x-0 bottom-0 border-t border-[hsl(var(--reader-border))] bg-[hsl(var(--reader-panel))]/95 p-4 backdrop-blur">
+                <SheetClose asChild>
+                  <Link
+                    href="/login"
+                    className={cn(
+                      "flex w-full items-center justify-center gap-2 rounded-md py-3",
+                      "text-xs font-bold uppercase tracking-[0.14em] text-white",
+                      "bg-gradient-to-r from-[hsl(var(--neon-magenta))] via-[hsl(var(--neon-violet))] to-[hsl(var(--neon-cyan))]",
+                      "shadow-[0_10px_28px_-10px_hsl(var(--neon-magenta)/0.75),0_0_0_1px_hsl(var(--neon-violet)/0.45)_inset]",
+                      "motion-safe:transition-all motion-safe:duration-300",
+                      "hover:shadow-[0_12px_32px_-10px_hsl(var(--neon-magenta)/0.9),0_0_24px_-4px_hsl(var(--neon-cyan)/0.55),0_0_0_1px_hsl(var(--neon-cyan)/0.55)_inset]",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--reader-cyan))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--reader-panel))]",
+                    )}
+                  >
+                    <LogIn className="h-4 w-4" />
+                    Sign in
+                  </Link>
+                </SheetClose>
+                <p className="mt-3 text-center text-[10px] uppercase tracking-[0.18em] text-[hsl(var(--reader-muted))]">
+                  {isMac ? "Press ⌘ K to search" : "Press Ctrl + K to search"}
+                </p>
+              </div>
+
+              {/* Bottom spacer so content isn't covered by the pinned CTA */}
+              <div className="h-32" aria-hidden />
             </SheetContent>
           </Sheet>
         </div>
@@ -117,3 +331,86 @@ export function PublicNavbar({ siteName }: PublicNavbarProps) {
     </header>
   );
 }
+
+/**
+ * ⌘K command-pill search trigger.
+ *
+ * - md+ : renders the SearchBar inline inside a glowing pill; the kbd hint
+ *         ("⌘ K" on macOS, "Ctrl K" elsewhere) sits at the right.
+ * - sm only : collapses to a small icon button that navigates to /search.
+ * - The pill's hover/focus state glows with cyan.
+ */
+function SearchCommandPill({ isMac }: { isMac: boolean }) {
+  return (
+    <>
+      {/* Pill (md+) */}
+      <div className="ml-auto hidden w-full max-w-sm md:block">
+        <div
+          className={cn(
+            "group relative flex items-center",
+            "rounded-md border border-[hsl(var(--reader-border))]",
+            "bg-[hsl(var(--reader-panel))]/80 backdrop-blur",
+            "motion-safe:transition-all motion-safe:duration-300",
+            "hover:border-[hsl(var(--neon-cyan))]/60",
+            "hover:shadow-[0_0_0_1px_hsl(var(--neon-cyan)/0.35),0_0_24px_-6px_hsl(var(--neon-cyan)/0.55)]",
+            "focus-within:border-[hsl(var(--neon-cyan))]/70",
+            "focus-within:shadow-[0_0_0_1px_hsl(var(--neon-cyan)/0.45),0_0_28px_-6px_hsl(var(--neon-cyan)/0.7)]",
+          )}
+        >
+          <Search
+            aria-hidden
+            className="pointer-events-none ml-3 h-4 w-4 shrink-0 text-[hsl(var(--reader-muted))] transition-colors group-hover:text-[hsl(var(--neon-cyan))] group-focus-within:text-[hsl(var(--neon-cyan))]"
+          />
+          <div className="flex-1">
+            <SearchBar
+              className={cn(
+                "[&>input]:h-9 [&>input]:w-full [&>input]:rounded-md",
+                "[&>input]:border-0 [&>input]:bg-transparent",
+                "[&>input]:px-2 [&>input]:text-sm",
+                "[&>input]:text-[hsl(var(--reader-text))]",
+                "[&>input]:placeholder:text-[hsl(var(--reader-muted))]",
+                "[&>input]:focus-visible:outline-none [&>input]:focus-visible:ring-0",
+                "[&>input]:shadow-none",
+              )}
+            />
+          </div>
+          <kbd
+            aria-hidden
+            className={cn(
+              "mr-2 inline-flex items-center gap-1 rounded-md",
+              "border border-[hsl(var(--reader-border))] bg-[hsl(var(--reader-bg))]/60",
+              "px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em]",
+              "text-[hsl(var(--reader-muted))]",
+              "motion-safe:transition-colors motion-safe:duration-200",
+              "group-hover:border-[hsl(var(--neon-cyan))]/50 group-hover:text-[hsl(var(--neon-cyan))]",
+              "group-focus-within:border-[hsl(var(--neon-cyan))]/60 group-focus-within:text-[hsl(var(--neon-cyan))]",
+            )}
+          >
+            <Command className="h-3 w-3" />
+            {isMac ? "K" : "Ctrl K"}
+          </kbd>
+        </div>
+      </div>
+
+      {/* Icon-only fallback (sm) */}
+      <Link
+        href="/search"
+        aria-label="Search"
+        className={cn(
+          "ml-auto grid h-9 w-9 place-items-center rounded-md",
+          "border border-[hsl(var(--reader-border))]",
+          "text-[hsl(var(--reader-muted))]",
+          "motion-safe:transition-all motion-safe:duration-200",
+          "hover:border-[hsl(var(--neon-cyan))]/60 hover:text-[hsl(var(--neon-cyan))]",
+          "hover:shadow-[0_0_0_1px_hsl(var(--neon-cyan)/0.3),0_0_18px_-6px_hsl(var(--neon-cyan)/0.55)]",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--reader-cyan))]",
+          "md:hidden",
+        )}
+      >
+        <Search className="h-4 w-4" />
+      </Link>
+    </>
+  );
+}
+
+export default PublicNavbar;

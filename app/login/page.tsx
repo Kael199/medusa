@@ -25,7 +25,7 @@ export default async function LoginPage({
     <main className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-muted/30 px-4 py-12">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,theme(colors.primary/12),transparent_60%),radial-gradient(ellipse_at_bottom_right,theme(colors.accent/60),transparent_55%)]"
+        className="pointer-events-none absolute inset-0 -z-10 hero-aurora opacity-80"
       />
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
